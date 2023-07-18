@@ -185,7 +185,7 @@ def plot_predicted_graph(model):
     true_edges = test_results['truth_graph']
     true_unique, true_lengths = test_data.pid[true_edges[0]].unique(
         return_counts=True)
-    pred_edges = test_results['preds']
+    pred_edges = test_results['preds'].cpu()
     pid = test_data.pid
     r, phi, z = test_data.cpu().x.T
     x, y = r * np.cos(phi * np.pi), r * np.sin(phi * np.pi)
