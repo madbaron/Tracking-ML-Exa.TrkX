@@ -83,12 +83,12 @@ class EmbeddingInferenceBuilder:
         module_mask = batch.modules[e_spatial[0]
                                     ] != batch.modules[e_spatial[1]]
         y_cluster, e_spatial = y_cluster[module_mask.cpu(
-        )], e_spatial[:, module_mask.cpu()]
+        )], e_spatial[:, module_mask.cpu()].cpu()
 
         # Arbitrary ordering to remove half of the duplicate edges
         R_dist = torch.sqrt(batch.x[:, 0] ** 2 + batch.x[:, 2] ** 2)
         e_spatial = e_spatial[:,
-                              (R_dist[e_spatial[0]] <= R_dist[e_spatial[1]])]
+                              (R_dist[e_spatial[0]] <= R_dist[e_spatial[1]]).cpu()]
 
         e_spatial, y_cluster = self.model.get_truth(batch, e_spatial, e_bidir)
 
