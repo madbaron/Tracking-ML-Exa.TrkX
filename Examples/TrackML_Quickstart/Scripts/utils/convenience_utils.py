@@ -205,7 +205,8 @@ def plot_predicted_graph(model):
         p.circle(X, Y, color=cmap[i], size=5)
         p.multi_line(X_edges.T.tolist(), Y_edges.T.tolist(), color=cmap[i])
 
-        track_pred_edges = pred_edges[:, (pid[pred_edges] == track).any(0)]
+        track_pred_edges = pred_edges[:,
+                                      (pid[pred_edges] == track).any(0).cpu()]
 
         X_edges, Y_edges = x[track_pred_edges].numpy(
         ), y[track_pred_edges].numpy()
@@ -226,14 +227,14 @@ def plot_track_lengths(model):
     signal_true_edges = test_data.signal_true_edges
     test_results = model.to(device).shared_evaluation(
         test_data.to(device), 0, model.hparams["r_test"], 1000, log=False)
-    pred_edges = test_results['preds']
+    pred_edges = test_results['preds'].cpu()
     pid = test_data.pid
     for track_id in test_data.pid.unique():
         e = signal_true_edges[:, pid[signal_true_edges[0]] == track_id]
         true_edges = pid[e[0]] == pid[e[1]]
         all_true_edges.append(true_edges.sum().cpu().numpy())
 
-        e = pred_edges[:, pid[pred_edges[0]] == track_id]
+        e = pred_edges[:, (pid[pred_edges[0]] == track_id).cpu()]
         true_edges = pid[e[0]] == pid[e[1]]
         all_pred_edges.append(true_edges.sum().cpu().numpy())
 
