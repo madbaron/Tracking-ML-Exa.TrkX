@@ -172,8 +172,9 @@ def plot_true_graph(sample_data, num_tracks=100):
 def plot_predicted_graph(model):
 
     # from matplotlib import pyplot as plt
+    model.to(device)
     test_data = model.testset[0].to(device)
-    test_results = model.to(device).shared_evaluation(
+    test_results = model.shared_evaluation(
         test_data.to(device), 0, model.hparams["r_test"], 1000, log=False)
 
     p = figure(title='Truth graphs', x_axis_label='x',
@@ -195,7 +196,7 @@ def plot_predicted_graph(model):
 
     for i, track in enumerate(true_unique[true_lengths >= 10][:10]):
         # Get true track plot
-        track_true_edges = true_edges[:, pid[true_edges[0]] == track]
+        track_true_edges = true_edges[:, pid[true_edges[0]] == track].cpu()
         X_edges, Y_edges = x[track_true_edges].numpy(
         ), y[track_true_edges].numpy()
         X = np.concatenate(X_edges)
